@@ -14,7 +14,7 @@ var i;
 
 io.on('connection', function(socket) {
 
-    io.to(socket.id).emit('init', users);
+    socket.emit('init', users);
 
     socket.on('login', function(user) {
         socket.username = user;
@@ -22,12 +22,12 @@ io.on('connection', function(socket) {
         time = getTime();
         console.log('['+time+'] '+user+' connected');
 
-        io.emit('joined', user, time);
+        socket.broadcast.emit('joined', user);
 
         socket.on('chat message', function(msg, user) {
             time = getTime();
             console.log('['+time+'] '+user+': '+msg);
-            io.emit('chat message', msg, user, time);
+            socket.broadcast.emit('chat message', msg, user, time);
         });
 
         socket.on('disconnect', function() {
@@ -35,7 +35,7 @@ io.on('connection', function(socket) {
             users.splice(i, 1);
             time = getTime();
             console.log('['+time+'] '+socket.username+' disconnected');
-            io.emit('disconnect', socket.username, time);
+            io.emit('disconnect', socket.username);
         });
     });
 
@@ -50,7 +50,7 @@ function getTime() {
     var time = new Date();
     var hours = time.getHours();
     var minutes = time.getMinutes();
-    if (hours<10) hours = '0'+hours;
-    if (minutes<10) minutes = '0'+minutes;
-    return hours+':'+minutes;
+    if (hours < 10) hours = '0' + hours;
+    if (minutes < 10) minutes = '0' + minutes;
+    return hours + ':' + minutes;
 }

@@ -2,13 +2,12 @@ $(function() {
 
     var $document = $(document);
     var $window = $(window);
-    var $body = $('html, body');
     var $msg = $('.msg');
     var $chatbox = $('.chatbox');
     var $form = $('form');
     var $userNum = $('.user-no');
     var $userList = $('.users-online');
-    var $userToggle = $('header > span, .close');
+    var $userToggle = $('header > .pull, .close');
 
     var socket = io();
 
@@ -18,14 +17,12 @@ $(function() {
     socket.on('init', function(users) {
         name = validate(prompt("Enter a username: "), users);
         socket.emit('login', name);
-        userNum = users.length;
+        userNum = users.length + 1;
         $userNum.text(userNum + ' User' + (userNum === 1 ? '' : 's'));
-        $userList.append($('<div class="me">').text(name));
+        $userList.append('<div class="me">' + name + '</div>');
         users.forEach(function(user) {
-            if (user !== name) {
-                $chatbox.append($('<li class="notice">').html('<span class="user">'+user+'</span> is online').fadeIn(200));
-                $userList.append($('<div class="' + user + '">').text(user));
-            }
+            $chatbox.append('<li class="notice"><span class="user">' + user + '</span> is online<li>');
+            $userList.append('<div data-user="' + user + '">' + user + '</div>');
         });
         $('.loader').fadeOut(200, function() {
             this.remove();
@@ -34,41 +31,25 @@ $(function() {
 
     $form.submit(function() {
         var msg = $msg.val();
-        if (msg === '') return false;
-        socket.emit('chat message', msg, name);
-        $msg.val('');
+        if (msg !== '') {
+            postMsg(msg, name, getTime());
+            socket.emit('chat message', msg, name);
+            $msg.val('');
+        }
         return false;
     });
 
-    socket.on('joined', function(user, time) {
-        $chatbox.append($('<li class="notice">').html(time+' <span class="user">'+user+'</span> connected').fadeIn(200));
+    socket.on('joined', function(user) {
+        $chatbox.append('<li class="notice"><span class="user">' + user + '</span> connected</li>');
         $userNum.text(++userNum + ' User' + (userNum === 1 ? '' : 's'));
-        if (user !== name) $userList.append($('<div data-user="' + user + '">').text(user));
+        $userList.append('<div data-user="' + user + '">' + user + '</div>');
         scrollDown();
     });
 
-    socket.on('chat message', function(msg, user, time) {
-        var $lastMsg = $chatbox.children('li').last();
-        var m = $lastMsg.children('.name').text();
-        if (m === user || ($lastMsg.hasClass('mine') && user === name)) {
-            $lastMsg.children('.bubble').last().after('<br><div class="bubble same"></div>');
-            $lastMsg.children('.bubble').last().text(msg).fadeIn(200).css('display', 'inline-block');
-            $lastMsg.children('.time').text(time);
-        } else {
-            m = '<li';
-            if (user===name) m +=' class="mine">';
-            else m += '><span class="name">'+user+'</span>';
-            m +='<div class="bubble"></div><span class="time">'+time+'</span></li>';
-            $chatbox.append(m);
-            $lastMsg = $chatbox.children('li').last();
-            $lastMsg.children('.bubble').text(msg);
-            $lastMsg.fadeIn(200);
-        }
-        scrollDown();
-    });
+    socket.on('chat message', postMsg);
 
-    socket.on('disconnect', function(user, time) {
-        $chatbox.append($('<li class="notice">').html(time+' <span class="user">'+user+'</span> disconnected').fadeIn(200));
+    socket.on('disconnect', function(user) {
+        $chatbox.append('<li class="notice"><span class="user">' + user + '</span> disconnected</li>');
         $userNum.text(--userNum + ' User' + (userNum === 1 ? '' : 's'));
         $userList.children('[data-user="'+user+'"]').remove();
         scrollDown();
@@ -96,15 +77,46 @@ $(function() {
 
     // Animation for scroll down
     function scrollDown() {
-        $body.animate({
-            scrollTop: $document.height()-$window.height()
-        }, 200);
+        window.scrollTo(0,document.body.scrollHeight);
     }
 
     // Toggles side bar
     function toggleSideBar() {
         if ($userList.css('right') === '-200px') $userList.css('right', '0px');
         else $userList.css('right', '-200px');
+    }
+
+    // Handles messages
+    function postMsg(msg, user, time) {
+        var $lastMsg = $chatbox.children('li').last();
+        var m = $lastMsg.children('.name').text();
+        if (m === user || ($lastMsg.hasClass('mine') && user === name)) {
+            var t = $lastMsg.children('.time').last().text();
+            if (t === time)
+                $lastMsg.children('.bubble').last().after('<br><div class="bubble"></div>');
+            else
+                $lastMsg.children('.time').last().after('<div class="bubble"></div><span class="time">' + time + '</span>');
+            $lastMsg.children('.bubble').last().text(msg);
+        } else {
+            m = '<li';
+            if (user===name) m += ' class="mine">';
+            else m += '><span class="name">'+user+'</span>';
+            m += '<div class="bubble"></div><span class="time">'+time+'</span></li>';
+            $chatbox.append(m);
+            $lastMsg = $chatbox.children('li').last();
+            $lastMsg.children('.bubble').text(msg);
+        }
+        scrollDown();
+    }
+
+    // Gets current time
+    function getTime() {
+        var time = new Date();
+        var hours = time.getHours();
+        var minutes = time.getMinutes();
+        if (hours < 10) hours = '0' + hours;
+        if (minutes < 10) minutes = '0' + minutes;
+        return hours + ':' + minutes;
     }
 
 });

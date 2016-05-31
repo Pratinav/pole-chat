@@ -47,7 +47,6 @@ body {
 
 .container {
     width: 100%;
-    max-width: 1000px;
     margin: 0 auto;
     padding: 0 20px;
     position: relative;
@@ -55,17 +54,31 @@ body {
 
 header {
     width: 100%;
-    text-align: center;
+    text-align: left;
     position: fixed;
-    padding: 1em 0;
+    padding: 1em 20px;
     top: 0;
     background: white;
     z-index: 3;
     color: #666;
+    border-bottom: 1px solid #DDD;
 }
 
 header > span {
     cursor: pointer;
+}
+
+b {
+    font-weight: 600;
+}
+
+header .pull {
+    position: absolute;
+    right: 20px;
+}
+
+header .pull:hover {
+    text-decoration: underline;
 }
 
 .users-online {
@@ -80,8 +93,7 @@ header > span {
 }
 
 .users-online div {
-    padding: 1.3em 0;
-    padding-left: 1.3em;
+    padding: 1em 0 1em 1em;
 }
 
 .users-online .me {
@@ -106,39 +118,34 @@ header > span {
     transition: all 200ms;
     cursor: pointer;
     position: absolute;
-    top: 1.3em;
+    opacity: 0.5;
+    top: 1em;
     right: 0.5em;
-    opacity: 1;
     height: 1.3em;
     width: 1.3em;
 }
 
-.close {
-    opacity: 0.6;
+.close:hover {
+    opacity: 1;
 }
 
 .chatbox {
-    padding: 34px 20px 250px;
+    padding: 45px 20px 250px;
     list-style-type: none;
 }
 
 li {
     margin-top: 1em;
-    display: none;
 }
 
 .bubble {
-    background: #3498db;
+    background: #D6D6D6;
     border-radius: 1.3em;
     padding: 6px 12px;
-    color: white;
+    color: black;
     display: inline-block;
     max-width: 70%;
     margin: 1px 0;
-}
-
-.same {
-    display: none;
 }
 
 .mine {
@@ -147,8 +154,8 @@ li {
 
 .mine .bubble {
     text-align: left;
-    background: #D6D6D6;
-    color: black;
+    background: #3498db;
+    color: white;
 }
 
 .notice {
@@ -171,6 +178,10 @@ li {
     display: block;
 }
 
+.time + .bubble {
+    margin-top: 0.5em;
+}
+
 .mine .time {
     margin-left: 0;
     margin-right: 0.75em;
@@ -179,9 +190,10 @@ li {
 .send-msg {
     position: fixed;
     bottom: 0;
-    padding: 10px 0;
+    padding: 1em 0;
     width: 100%;
     background: white;
+    border-top: 1px solid #DDD
 }
 
 input {
@@ -217,4 +229,24 @@ button svg:hover {
 
 button:active {
     outline: none;
+}
+
+@media screen and (min-width: 1200px) {
+
+    .users-online {
+        left: 0px;
+    }
+
+    .close, header .pull {
+        display: none;
+    }
+
+    .container {
+        max-width: 800px;
+    }
+
+    header {
+        text-align: center;
+    }
+
 }
