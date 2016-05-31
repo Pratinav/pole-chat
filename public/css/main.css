@@ -24,12 +24,25 @@ body {
     top: 0;
 }
 
-@keyframes spin {
+@-webkit-keyframes spin {
     0% {
-        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
     }
     100% {
-        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
     }
 }
 
@@ -39,7 +52,8 @@ body {
     height: 40px;
     border: 0.25em solid rgba(52, 152, 219, 0.2);
     border-top-color: #3498db;
-    animation: spin 1s infinite linear;
+    -webkit-animation: spin 1s infinite linear;
+            animation: spin 1s infinite linear;
     position: relative;
     margin: -12px auto 0;
     top: 50%;
@@ -89,6 +103,7 @@ header .pull:hover {
     position: fixed;
     right: -200px;
     z-index: 5;
+    -webkit-transition: all 200ms ease-in-out;
     transition: all 200ms ease-in-out;
 }
 
@@ -115,18 +130,21 @@ header .pull:hover {
 
 .close {
     fill: #DCDCDC;
+    -webkit-transition: all 200ms;
     transition: all 200ms;
     cursor: pointer;
     position: absolute;
-    opacity: 0.5;
     top: 1em;
     right: 0.5em;
     height: 1.3em;
     width: 1.3em;
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
 }
 
 .close:hover {
-    opacity: 1;
+    -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
 }
 
 .chatbox {
@@ -218,6 +236,7 @@ button {
 
 button svg {
     fill: #3498db;
+    -webkit-transition: all 200ms;
     transition: all 200ms;
     vertical-align: middle;
     opacity: 1;
