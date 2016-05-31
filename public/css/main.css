@@ -27,11 +27,11 @@ body {
 @-webkit-keyframes spin {
     0% {
         -webkit-transform: rotate(0deg);
-                transform: rotate(0deg);
+            transform: rotate(0deg);
     }
     100% {
         -webkit-transform: rotate(360deg);
-                transform: rotate(360deg);
+            transform: rotate(360deg);
     }
 }
 
@@ -104,7 +104,7 @@ header .pull:hover {
     right: -200px;
     z-index: 5;
     -webkit-transition: all 200ms ease-in-out;
-    transition: all 200ms ease-in-out;
+            transition: all 200ms ease-in-out;
 }
 
 .users-online div {
@@ -131,7 +131,7 @@ header .pull:hover {
 .close {
     fill: #DCDCDC;
     -webkit-transition: all 200ms;
-    transition: all 200ms;
+            transition: all 200ms;
     cursor: pointer;
     position: absolute;
     top: 1em;
@@ -237,7 +237,7 @@ button {
 button svg {
     fill: #3498db;
     -webkit-transition: all 200ms;
-    transition: all 200ms;
+            transition: all 200ms;
     vertical-align: middle;
     opacity: 1;
 }
