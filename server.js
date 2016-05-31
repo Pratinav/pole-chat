@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-var port = process.argv[2] || 80;
+var port = process.env.PORT || 3000;
 
 // Routing
 app.use(express.static(__dirname + '/public'));
@@ -42,7 +42,7 @@ io.on('connection', function(socket) {
 
 });
 
-server.listen(port, '0.0.0.0', function(){
+server.listen(port, function(){
     console.log('Chat online at *:'+port);
 });
 
