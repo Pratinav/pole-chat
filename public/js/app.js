@@ -4,10 +4,12 @@ $(function() {
     var $window = $(window);
     var $msg = $('.msg');
     var $chatbox = $('.chatbox');
-    var $form = $('form');
+    var $form = $('form.container');
     var $userNum = $('.user-no');
     var $userList = $('.users-online');
     var $userToggle = $('header > .pull, .close');
+    var $login = $('.login');
+    var $loginInput = $('.login input');
 
     var socket = io();
 
@@ -15,17 +17,21 @@ $(function() {
     var userNum = 0;
 
     socket.on('init', function(users) {
-        name = validate(prompt("Enter a username: "), users);
-        socket.emit('login', name);
-        userNum = users.length + 1;
-        $userNum.text(userNum + ' User' + (userNum === 1 ? '' : 's'));
-        $userList.append('<div class="me">' + name + '</div>');
-        users.forEach(function(user) {
-            $chatbox.append('<li class="notice"><span class="user">' + user + '</span> is online<li>');
-            $userList.append('<div data-user="' + user + '">' + user + '</div>');
-        });
-        $('.loader').fadeOut(200, function() {
-            this.remove();
+        $login.submit(function() {
+            name = $loginInput.val();
+            if (validate(name, users)) {
+                socket.emit('login', name);
+                userNum = users.length + 1;
+                $userNum.text(userNum + ' User' + (userNum === 1 ? '' : 's'));
+                $userList.append('<div class="me">' + name + '</div>');
+                users.forEach(function(user) {
+                    $chatbox.append('<li class="notice"><span class="user">' + user + '</span> is online<li>');
+                    $userList.append('<div data-user="' + user + '">' + user + '</div>');
+                });
+                $('.login-wrapper').remove();
+            }
+            $loginInput.val('');
+            return false;
         });
     });
 
@@ -60,19 +66,28 @@ $(function() {
     // validates username
     function validate(user, users) {
         var taken = false;
+
+        $login.children('.username-taken').hide();
+        $login.children('.username-invalid').hide();
+
         if (user === null || !(/^[a-z0-9_-]{3,15}$/i.test(user.trim()))) {
-            user = validate(prompt('Invalid username! Username can only contain letters, numbers, underscores and dashes. Minimum length: 3. Maximum length: 15'), users);
+            $login.children('.username-invalid').show();
+            return false;
         }
+
         for(var i = 0; i < users.length; i++) {
             if (user === users[i]) {
                 taken = true;
                 break;
             }
         }
+
         if(taken) {
-            user = validate(prompt('Username taken!'), users);
+            $login.children('.username-taken').show();
+            return false;
         }
-        return user;
+
+        return true;
     }
 
     // Animation for scroll down
@@ -99,7 +114,7 @@ $(function() {
             $lastMsg.children('.bubble').last().text(msg);
         } else {
             m = '<li';
-            if (user===name) m += ' class="mine">';
+            if (user === name) m += ' class="mine">';
             else m += '><span class="name">'+user+'</span>';
             m += '<div class="bubble"></div><span class="time">'+time+'</span></li>';
             $chatbox.append(m);

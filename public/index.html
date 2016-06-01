@@ -8,12 +8,19 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="/css/main.css">
+        <link rel="stylesheet" href="css/main.css">
     </head>
 
     <body>
-        <div class="loader">
-            <div class="spinner"></div>
+        <div class="login-wrapper">
+            <h1>Pole Chat</h1>
+            <form class="login">
+                <label>Enter any username to continue</label>
+                <input type="text" placeholder="Enter any username">
+                <div class="err username-taken"><b>Username Taken</b></div>
+                <div class="err username-invalid"><b>Username Invalid</b>Username can only contain letters, numbers, underscores and dashes.<br>Minimum length: 3<br>Maximum length: 15</div>
+                <button>Join Chat</button>
+            </form>
         </div>
         <header>
             <b>Pole Chat</b>
@@ -33,8 +40,8 @@
         <ul class="chatbox container"></ul>
         <section class="send-msg">
             <form class="container">
-                <input class="msg" autocomplete="off" placeholder="Write something">
-                <button>
+                <input type="text" class="msg" autocomplete="off" placeholder="Write something">
+                <button class="btn-send">
                     <svg fill="#3498db" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                         <path d="M0 0h24v24H0z" fill="none"/>
