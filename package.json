@@ -1,15 +1,15 @@
 {
     "name": "pole-chat",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "description": "A simple chat app.",
+    "private": true,
+    "scripts": {
+        "start": "node index.js"
+    },
     "dependencies": {
         "express": "*",
-        "socket.io": "*"
-    },
-    "main": "index.js",
-    "scripts": {
-        "start": "node index.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "socket.io": "*",
+        "pug": "*"
     },
     "author": "Pratinav Bagla <pratinavbagla@gmail.com> (http://pratinav.tk)",
     "license": "MIT"

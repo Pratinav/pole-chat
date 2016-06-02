@@ -4,8 +4,28 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
-// Routing
+app.set('view engine', 'pug');
+
 app.use(express.static(__dirname + '/public'));
+
+app.get('/', function(req, res) {
+    res.render('index');
+});
+
+app.use(function(req, res, next) {
+    res.status(404).render('error', {
+        code: '404',
+        message: 'There\'s nothing here.'
+    });
+});
+
+app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).render('error', {
+        code: '500',
+        message: 'A pole is stuck in our system. Please check back later.'
+    });
+});
 
 // Chat
 var time;
