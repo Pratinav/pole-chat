@@ -1,11 +1,12 @@
+var compression = require('compression');
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
+app.use(compression());
 app.set('view engine', 'pug');
-
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) {

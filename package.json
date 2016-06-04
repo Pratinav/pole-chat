@@ -9,7 +9,8 @@
     "dependencies": {
         "express": "*",
         "socket.io": "*",
-        "pug": "*"
+        "pug": "*",
+        "compression": "*"
     },
     "author": "Pratinav Bagla <pratinavbagla@gmail.com> (http://pratinav.tk)",
     "license": "MIT"
