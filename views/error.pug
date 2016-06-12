@@ -1,7 +1,54 @@
 extends layout.pug
 
 block styles
-    link(rel='stylesheet', href='/css/error.css')
+    style.
+        body {
+            margin: 0;
+            font: 14px 'Open Sans', Helvetica, Arial, sans-serif;
+            line-height: 1.45;
+            text-rendering: optimizeLegibility;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 0 20px;
+            margin: 5em auto 0;
+        }
+
+        p {
+            margin: 0 0 0.5em;
+        }
+
+        b {
+            font-weight: 600;
+            font-size: 1.5em;
+        }
+
+        .mute {
+            color: #666;
+        }
+
+        a {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0 0.25em 0.25em 0;
+            cursor: pointer;
+            padding: 0.5em 1.5em;
+            text-decoration: none;
+            display: inline-block;
+            -webkit-transition: 180ms all;
+                    transition: 180ms all;
+        }
+
+        a:hover, a:focus {
+            background: #2f90d2;
+        }
+        
+        a:active {
+            background: #308dcc;
+        }
 
 block content
     .container

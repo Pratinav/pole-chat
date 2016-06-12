@@ -48,7 +48,7 @@ io.on('connection', function(socket) {
         socket.on('chat message', function(msg, user) {
             time = getTime();
             console.log('['+time+'] '+user+': '+msg);
-            socket.broadcast.emit('chat message', msg, user, time);
+            socket.broadcast.emit('chat message', msg, user);
         });
 
         socket.on('disconnect', function() {
