@@ -2,6 +2,7 @@ window.onload = function() {
 
     var socket = io();
     var init = false;
+    var spinnerEl = document.querySelector('.spinner__container');
     var loginWrapperEl = document.querySelector('.login-wrapper');
     var loginFormEl = document.querySelector('.login');
     var loginInputEl = document.querySelector('.login-input');
@@ -37,26 +38,30 @@ window.onload = function() {
         users.push(username);
         socket.emit('login', username);
 
-         document.querySelector('.me').appendChild(document.createTextNode(username));
+        updateUserNum(users.length);
+        var meEl = document.querySelector('.me');
+        meEl.appendChild(document.createTextNode(username));
+        meEl.style.display = 'block';
 
-        loginWrapperEl.classList.add('login-wrapper--disabled');
         loginWrapperEl.addEventListener('transitionend', function(evt) {
             loginWrapperEl.parentNode.removeChild(loginWrapperEl);
             loginWrapperEl.removeEventListener('transitionend', this);
         });
+        loginWrapperEl.classList.add('login-wrapper--disabled');
 
         loginFormEl.removeEventListener('submit', onLogin);
     }
 
     function validateUsername() {
-        if (usernameInvalidEl.style.display === 'block')
-            usernameInvalidEl.style.display = 'none';
-        if (usernameTakenEl.style.display === 'block')
-            usernameTakenEl.style.display = 'none';
         if (!/^[a-z0-9_-]{3,15}$/i.test(username)) {
-            usernameInvalidEl.style.display = 'block';
+            if (usernameTakenEl.style.display === 'block')
+                usernameTakenEl.style.display = 'none';
+            if (usernameInvalidEl.style.display === 'none' || !usernameInvalidEl.style.display)
+                usernameInvalidEl.style.display = 'block';
             return false;
         }
+        if (usernameInvalidEl.style.display === 'block')
+                usernameInvalidEl.style.display = 'none';
         var usernameTaken = false;
         for (var i = 0; i < users.length; i++) {
             if (users[i] === username) {
@@ -65,16 +70,19 @@ window.onload = function() {
             }
         }
         if (usernameTaken) {
-            usernameTakenEl.style.display = 'block';
+            if (usernameTakenEl.style.display === 'none' || !usernameTakenEl.style.display)
+                usernameTakenEl.style.display = 'block';
             return false;
         }
+        if (usernameTakenEl.style.display === 'block')
+            usernameTakenEl.style.display = 'none';
         return true;
     }
 
     function onInit(existingUsers) {
         init = true;
         users = existingUsers;
-        updateUserNum(users.length + 1);
+        updateUserNum(users.length);
         users.forEach(function(user) {
             var newUserListEl = document.createElement('div');
             newUserListEl.setAttribute('data-user', user);
@@ -82,6 +90,11 @@ window.onload = function() {
             newUserListEl.appendChild(newUsername);
             usersOnlineEl.appendChild(newUserListEl);
         });
+        spinnerEl.addEventListener('transitionend', function(evt) {
+            spinnerEl.parentNode.removeChild(spinnerEl);
+            spinnerEl.removeEventListener('transitionend', this);
+        });
+        spinnerEl.classList.add('spinner__container--disabled');
     }
 
     function onMessage(evt) {
@@ -164,8 +177,13 @@ window.onload = function() {
     }
 
     function updateUserNum(newUserNum) {
-        for (var x = 0; x < userNumEl.length; x++)
-            userNumEl[x].innerHTML = newUserNum + ' User' + (users.length > 0 ? 's' : '');
+        if (newUserNum === 0) {
+            userNumEl[0].innerHTML = 'No Users Online';
+            userNumEl[1].innerHTML = 'No Users Online';
+            return;
+        }
+        userNumEl[0].innerHTML = 'View ' + newUserNum + ' User' + (users.length > 1 ? 's' : '');
+        userNumEl[1].innerHTML = newUserNum + ' User' + (users.length > 1 ? 's' : '') + ' Online';
     }
 
     function toggleSideBar() {

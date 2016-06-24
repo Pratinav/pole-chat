@@ -19,10 +19,74 @@ block styles
             text-rendering: optimizeLegibility;
         }
 
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .spinner__container {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: white;
+            z-index: 9;
+        }
+
+        .spinner__container--disabled {
+            opacity: 0;
+            -webkit-transition: opacity 200ms;
+                    transition: opacity 200ms;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            margin: 0 auto;
+            top: 50%;
+            margin-top: -20px;
+        }
+
+        .double-bounce1, .double-bounce2 {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #3498db;
+            opacity: 0.6;
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+                    animation: sk-bounce 2.0s infinite ease-in-out;
+        }
+
+        .double-bounce2 {
+            -webkit-animation-delay: -1.0s;
+                    animation-delay: -1.0s;
+        }
+
+        @-webkit-keyframes sk-bounce {
+            0%, 100% { -webkit-transform: scale(0.0) }
+            50% { -webkit-transform: scale(1.0) }
+        }
+
+        @keyframes sk-bounce {
+            0%, 100% {
+                transform: scale(0.0);
+                -webkit-transform: scale(0.0);
+            } 50% {
+                transform: scale(1.0);
+                -webkit-transform: scale(1.0);
+            }
+        }
+
         .login-wrapper {
             width: 100%;
             height: 100%;
-            background: white;
+            background: rgba(0,0,0,0.5);
             z-index: 7;
             position: fixed;
             top: 0;
@@ -35,17 +99,14 @@ block styles
                     transition: opacity 200ms;
         }
 
-        h1 {
-            font-size: 2em;
-            font-weight: 600;
-            text-align: center;
-            margin: 1em 0;
-        }
-
         .login {
             max-width: 440px;
-            padding: 0 1.5em;
+            padding: 2.5em;
             margin: 0 auto;
+            background: white;
+            border-radius: 0.45em;
+            position: relative;
+            top: 20%;
         }
 
         .login label, .login input {
@@ -187,6 +248,7 @@ block styles
 
         .users-online .me {
             background: #444;
+            display: none;
         }
 
         .users-online > div:first-child {
@@ -348,8 +410,12 @@ block styles
 
 
 block content
+    // Spinner: http://tobiasahlin.com/spinkit/
+    .spinner__container
+        .spinner
+            .double-bounce1
+            .double-bounce2
     .login-wrapper
-        h1 Pole Chat
         form.login
             label Enter any username to continue
             .input-wrapper
@@ -365,18 +431,16 @@ block content
                 br
                 | Maximum length: 15
     header
-        b Pole Chat
+        a(href="https://github.com/pratinav/pole-chat", target="_blank", title="GitHub"): b Pole Chat
         span.pull
-            | View  
             span.user-no
     .users-online
         div
             span.user-no
-            |  Online
             svg.close(fill="#DCDCDC", height="24", viewbox="0 0 24 24", width="24", xmlns="http://www.w3.org/2000/svg")
                 path(d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z")
                 path(d="M0 0h24v24H0z", fill="none")
-        
+
         .me
     ul.chatbox.container
     section.send-msg
@@ -394,6 +458,6 @@ block content
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-    
+
         ga('create', 'UA-78761313-2', 'auto');
         ga('send', 'pageview');
