@@ -103,7 +103,10 @@ window.onload = function() {
     }
 
     function onTyping(evt) {
-        if (!messageInputEl.value) return;
+        var key = evt.keyCode;
+        if (key >= 16 && key <= 45) return;
+        if (key >= 91 && key <= 93) return;
+        if (key >= 112 && key <= 145) return;
         if (!isTyping) {
             isTyping = true;
             socket.emit('started typing', username);

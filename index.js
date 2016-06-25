@@ -9,12 +9,14 @@ app.use(compression());
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));
 
-app.get('*', function(req, res, next) {
-    if (req.headers['x-forwarded-proto'] != 'https')
-        res.redirect('https://pole-chat.herokuapp.com' + req.url);
-    else
-        next();
-});
+if (port !== 3000) {
+    app.get('*', function(req, res, next) {
+        if (req.headers['x-forwarded-proto'] != 'https')
+            res.redirect('https://pole-chat.herokuapp.com' + req.url);
+        else
+            next();
+    });
+}
 
 app.get('/', function(req, res) {
     res.render('index');
@@ -59,12 +61,16 @@ io.on('connection', function(socket) {
         });
 
         socket.on('started typing', function(user) {
+            i = users.indexOf(socket.username);
+            users[i].typing = true;
             time = getTime();
             console.log('['+time+'] '+user+' started typing...');
             socket.broadcast.emit('started typing', user);
         });
 
         socket.on('ended typing', function(user) {
+            i = users.indexOf(socket.username);
+            users[i].typing = false;
             time = getTime();
             console.log('['+time+'] '+user+' ended typing');
             socket.broadcast.emit('ended typing', user);
@@ -72,6 +78,8 @@ io.on('connection', function(socket) {
 
         socket.on('disconnect', function() {
             i = users.indexOf(socket.username);
+            if (users[i].typing)
+                io.emit('ended typing', user);
             users.splice(i, 1);
             time = getTime();
             console.log('['+time+'] '+socket.username+' disconnected');
