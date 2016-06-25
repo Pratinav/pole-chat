@@ -103,6 +103,7 @@ window.onload = function() {
     }
 
     function onTyping(evt) {
+        if (!messageInputEl.value) return;
         if (!isTyping) {
             isTyping = true;
             socket.emit('started typing', username);
