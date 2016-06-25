@@ -8,6 +8,7 @@ NOT-SO PRIVATE TODOS
 ====================
 - Touch enable sidebar
 -->
+- Convert it into a progressive web app
 - Add private messaging
 - Add private chat rooms
 - Add user registration?

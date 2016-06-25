@@ -51,6 +51,18 @@ io.on('connection', function(socket) {
             socket.broadcast.emit('chat message', msg, user);
         });
 
+        socket.on('started typing', function(user) {
+            time = getTime();
+            console.log('['+time+'] '+user+' started typing...');
+            socket.broadcast.emit('started typing', user);
+        });
+
+        socket.on('ended typing', function(user) {
+            time = getTime();
+            console.log('['+time+'] '+user+' ended typing');
+            socket.broadcast.emit('ended typing', user);
+        });
+
         socket.on('disconnect', function() {
             i = users.indexOf(socket.username);
             users.splice(i, 1);

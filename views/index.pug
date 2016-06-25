@@ -101,6 +101,7 @@ block styles
 
         .login {
             max-width: 440px;
+            width: 95%;
             padding: 2.5em;
             margin: 0 auto;
             background: white;
@@ -384,6 +385,45 @@ block styles
 
         .btn-send:active {
             fill: #308dcc;
+        }
+
+        .bubble.typing-indicator {
+            padding: 0.75em 1em;
+        }
+
+        .typing-indicator span {
+            height: 0.7em;
+            width: 0.7em;
+            float: left;
+            margin: 0 1px;
+            background-color: #9E9EA1;
+            display: block;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+        .typing-indicator span:nth-of-type(1) {
+            -webkit-animation: 1s blink infinite 0.3333s;
+            animation: 1s blink infinite 0.3333s;
+        }
+        .typing-indicator span:nth-of-type(2) {
+            -webkit-animation: 1s blink infinite 0.6666s;
+            animation: 1s blink infinite 0.6666s;
+        }
+        .typing-indicator span:nth-of-type(3) {
+            -webkit-animation: 1s blink infinite 0.9999s;
+            animation: 1s blink infinite 0.9999s;
+        }
+
+        @-webkit-keyframes blink {
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 1;
+            }
         }
 
         @media screen and (min-width: 1200px) {

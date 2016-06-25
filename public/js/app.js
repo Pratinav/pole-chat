@@ -17,16 +17,21 @@ window.onload = function() {
     var closeSideBarEl = document.querySelector('.close');
     var username;
     var users;
+    var isTyping = false;
+    var lastTimeout;
 
     loginFormEl.addEventListener('submit', onLogin);
     messageFormEl.addEventListener('submit', onMessage);
     openSideBarEl.addEventListener('click', toggleSideBar);
     closeSideBarEl.addEventListener('click', toggleSideBar);
+    messageInputEl.onkeydown = onTyping;
 
     socket.on('init', onInit);
     socket.on('joined', postNotice);
     socket.on('disconnect', postNotice);
     socket.on('chat message', postMessage);
+    socket.on('started typing', onStartedTyping);
+    socket.on('ended typing', onEndedTyping);
 
     function onLogin(evt) {
         evt.preventDefault();
@@ -97,11 +102,62 @@ window.onload = function() {
         spinnerEl.classList.add('spinner__container--disabled');
     }
 
+    function onTyping(evt) {
+        if (!isTyping) {
+            isTyping = true;
+            socket.emit('started typing', username);
+        }
+        if (lastTimeout)
+            clearTimeout(lastTimeout);
+        lastTimeout = setTimeout(function() {
+            isTyping = false;
+            socket.emit('ended typing', username);
+        }, 2000);
+    }
+
+    function onStartedTyping(user) {
+        var newBubbleEl = document.createElement('div');
+        newBubbleEl.classList.add('bubble');
+        newBubbleEl.classList.add('typing-indicator');
+        newBubbleEl.innerHTML = '<span></span><span></span><span></span>';
+        var lastMessageEl = chatBoxEl.querySelectorAll('li');
+        lastMessageEl = lastMessageEl[lastMessageEl.length - 1];
+        if (lastMessageEl && lastMessageEl.getAttribute('data-user') === user) {
+            lastMessageEl.appendChild(newBubbleEl);
+            return;
+        }
+        var newMessageEl = document.createElement('li');
+        newMessageEl.setAttribute('data-user', user);
+        newMessageEl.setAttribute('data-typing', 'true');
+        var newUserEl = document.createElement('span');
+        newUserEl.classList.add('name');
+        newUserEl.appendChild(document.createTextNode(user));
+        newMessageEl.appendChild(newUserEl);
+        newMessageEl.appendChild(newBubbleEl);
+        chatBoxEl.appendChild(newMessageEl);
+    }
+
+    function onEndedTyping(user) {
+        var messageEl = document.querySelectorAll('li[data-user="' + user + '"]');
+        messageEl = messageEl[messageEl.length - 1];
+        if (messageEl.hasAttribute('data-typing')) {
+            chatBoxEl.removeChild(messageEl);
+            return;
+        }
+        var typingEl = messageEl.lastChild;
+        messageEl.removeChild(typingEl);
+    }
+
     function onMessage(evt) {
         evt.preventDefault();
         var msg = messageInputEl.value.trim();
         if (!msg)
             return;
+        if (isTyping) {
+            clearTimeout(lastTimeout);
+            isTyping = false;
+            socket.emit('ended typing', username);
+        }
         postMessage(msg, username, new Date());
         socket.emit('chat message', msg, username);
         messageInputEl.value = '';
