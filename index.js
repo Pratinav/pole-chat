@@ -9,6 +9,13 @@ app.use(compression());
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));
 
+app.get('*', function(req, res, next) {
+    if (req.headers['x-forwarded-proto'] != 'https')
+        res.redirect('https://pole-chat.herokuapp.com' + req.url);
+    else
+        next();
+});
+
 app.get('/', function(req, res) {
     res.render('index');
 });
