@@ -19,12 +19,22 @@ window.onload = function() {
     var users;
     var isTyping = false;
     var lastTimeout;
+    var blurred = false;
+    var unreadMessages = 0;
 
     loginFormEl.addEventListener('submit', onLogin);
     messageFormEl.addEventListener('submit', onMessage);
     openSideBarEl.addEventListener('click', toggleSideBar);
     closeSideBarEl.addEventListener('click', toggleSideBar);
     messageInputEl.onkeydown = onTyping;
+    window.onblur = function(evt) {
+        blurred = true;
+    };
+    window.onfocus = function(evt) {
+        blurred = false;
+        unreadMessages = 0;
+        document.title = 'Pole Chat';
+    };
 
     socket.on('init', onInit);
     socket.on('joined', postNotice);
@@ -193,6 +203,9 @@ window.onload = function() {
     }
 
     function postMessage(msg, user) {
+        if (blurred) {
+            document.title = 'Pole Chat (' + (++unreadMessages) + ')';
+        }
         var time = getTime();
         var newBubbleEl = document.createElement('div');
         newBubbleEl.classList.add('bubble');
