@@ -4,12 +4,13 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
+var dev = port === 3000;
 
 app.use(compression());
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));
 
-if (port !== 3000) {
+if (!dev) {
     app.get('*', function(req, res, next) {
         if (req.headers['x-forwarded-proto'] != 'https')
             res.redirect('https://pole-chat.herokuapp.com' + req.url);
@@ -19,13 +20,16 @@ if (port !== 3000) {
 }
 
 app.get('/', function(req, res) {
-    res.render('index');
+    res.render('index', {
+        dev: dev
+    });
 });
 
 app.use(function(req, res, next) {
     res.status(404).render('error', {
         code: '404',
-        message: 'There\'s nothing here.'
+        message: 'There\'s nothing here.',
+        dev: dev
     });
 });
 
@@ -33,7 +37,8 @@ app.use(function(err, req, res, next) {
     console.error(err.stack);
     res.status(500).render('error', {
         code: '500',
-        message: 'A pole is stuck in our system. Please check back later.'
+        message: 'A pole is stuck in our system. Please check back later.',
+        dev: dev
     });
 });
 

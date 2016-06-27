@@ -18,7 +18,8 @@ html(lang='en')
         meta(name="theme-color", content="#308dcc")
         meta(name="msapplication-navbutton-color", content="#308dcc")
         meta(name="apple-mobile-web-app-status-bar-style", content="black-translucent")
-        link(href='https://fonts.googleapis.com/css?family=Open+Sans:400,600', rel='stylesheet', type='text/css')
+        if !dev
+            link(href='https://fonts.googleapis.com/css?family=Open+Sans:400,600', rel='stylesheet', type='text/css')
         block styles
 
     body
