@@ -114,6 +114,7 @@ window.onload = function() {
 
     function onTyping(evt) {
         var key = evt.keyCode;
+        if (key === 9 || key === 13) return;
         if (key >= 16 && key <= 45) return;
         if (key >= 91 && key <= 93) return;
         if (key >= 112 && key <= 145) return;
