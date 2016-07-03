@@ -1,46 +1,19 @@
-var compression = require('compression');
-var express = require('express');
-var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io')(server);
-var port = process.env.PORT || 3000;
-var dev = port === 3000;
+var app = require('http').createServer(handler)
+var io = require('socket.io')(app);
+var port = process.env.PORT || 5000;
 
-app.use(compression());
-app.set('view engine', 'pug');
-app.use(express.static(__dirname + '/public'));
+app.listen(port, function() {
+    console.log('Chat online at *:'+port);
+});
 
-if (!dev) {
-    app.get('*', function(req, res, next) {
-        if (req.headers['x-forwarded-proto'] != 'https')
-            res.redirect('https://pole-chat.herokuapp.com' + req.url);
-        else
-            next();
+
+function handler (req, res, err) {
+    if (err) throw err;
+    res.writeHead(301, {
+        'Location': 'https://polechat.tk/'
     });
+    res.end();
 }
-
-app.get('/', function(req, res) {
-    res.render('index', {
-        dev: dev
-    });
-});
-
-app.use(function(req, res, next) {
-    res.status(404).render('error', {
-        code: '404',
-        message: 'There\'s nothing here.',
-        dev: dev
-    });
-});
-
-app.use(function(err, req, res, next) {
-    console.error(err.stack);
-    res.status(500).render('error', {
-        code: '500',
-        message: 'A pole is stuck in our system. Please check back later.',
-        dev: dev
-    });
-});
 
 // Chat
 var time;
@@ -52,6 +25,20 @@ io.on('connection', function(socket) {
     socket.emit('init', users);
 
     socket.on('login', function(user) {
+
+        if (!/^[a-z0-9_-]{3,15}$/i.test(user)) {
+            socket.emit('invalid username');
+            return;
+        }
+        for (var i = 0; i < users.length; i++) {
+            if (users[i] === user) {
+                socket.emit('username taken');
+                return;
+            }
+        }
+
+        socket.emit('login successfull');
+
         socket.username = user;
         users.push(socket.username);
         time = getTime();
@@ -93,10 +80,6 @@ io.on('connection', function(socket) {
     });
 
 
-});
-
-server.listen(port, function(){
-    console.log('Chat online at *:'+port);
 });
 
 function getTime() {

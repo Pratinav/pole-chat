@@ -7,11 +7,8 @@
         "start": "node index.js"
     },
     "dependencies": {
-        "express": "*",
-        "socket.io": "*",
-        "pug": "*",
-        "compression": "*"
+        "socket.io": "*"
     },
-    "author": "Pratinav Bagla <pratinavbagla@gmail.com> (http://pratinav.tk)",
+    "author": "Pratinav Bagla <pratinavbagla@gmail.com> (https://pratinav.xyz/)",
     "license": "MIT"
 }

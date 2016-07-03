@@ -1,42 +1,46 @@
-window.onload = function() {
+window.onload = () => {
 
-    var socket = io();
-    var init = false;
-    var spinnerEl = document.querySelector('.spinner__container');
-    var loginWrapperEl = document.querySelector('.login-wrapper');
-    var loginFormEl = document.querySelector('.login');
-    var loginInputEl = document.querySelector('.login-input');
-    var usernameInvalidEl = document.querySelector('.username-invalid');
-    var usernameTakenEl = document.querySelector('.username-taken');
-    var usersOnlineEl = document.querySelector('.users-online');
-    var userNumEl = document.querySelectorAll('.user-no');
-    var chatBoxEl = document.querySelector('.chatbox');
-    var messageFormEl = document.querySelector('.send-msg form');
-    var messageInputEl = document.querySelector('.msg');
-    var openSideBarEl = document.querySelector('.pull');
-    var closeSideBarEl = document.querySelector('.close');
-    var username;
-    var users;
-    var isTyping = false;
-    var lastTimeout;
-    var blurred = false;
-    var unreadMessages = 0;
+    const socket = io('https://pole-chat.herokuapp.com/');
+    const spinnerEl = document.querySelector('.spinner__container');
+    const loginWrapperEl = document.querySelector('.login__wrapper');
+    const loginFormEl = document.querySelector('.login');
+    const loginInputEl = document.querySelector('.login-input');
+    const usernameInvalidEl = document.querySelector('.username-invalid');
+    const usernameTakenEl = document.querySelector('.username-taken');
+    const usersOnlineEl = document.querySelector('.users-online');
+    const userNumEl = document.querySelectorAll('.user-no');
+    const chatBoxEl = document.querySelector('.chatbox');
+    const messageFormEl = document.querySelector('.send-msg form');
+    const messageInputEl = document.querySelector('.msg');
+    const openSideBarEl = document.querySelector('.pull');
+    const closeSideBarEl = document.querySelector('.close');
+    let init = false;
+    let username;
+    let users;
+    let isTyping = false;
+    let lastTimeout;
+    let blurred = false;
+    let unreadMessages = 0;
 
     loginFormEl.addEventListener('submit', onLogin);
     messageFormEl.addEventListener('submit', onMessage);
     openSideBarEl.addEventListener('click', toggleSideBar);
     closeSideBarEl.addEventListener('click', toggleSideBar);
     messageInputEl.onkeydown = onTyping;
-    window.onblur = function(evt) {
+
+    window.onblur = evt => {
         blurred = true;
     };
-    window.onfocus = function(evt) {
+    window.onfocus = evt => {
         blurred = false;
         unreadMessages = 0;
         document.title = 'Pole Chat';
     };
 
     socket.on('init', onInit);
+    socket.on('invalid username', onUserInvalid);
+    socket.on('username taken', onUserTaken);
+    socket.on('login successfull', onSuccessfullLogin);
     socket.on('joined', postNotice);
     socket.on('disconnect', postNotice);
     socket.on('chat message', postMessage);
@@ -45,67 +49,53 @@ window.onload = function() {
 
     function onLogin(evt) {
         evt.preventDefault();
-        if (!init) return;
         username = loginInputEl.value.trim();
-        if (!validateUsername())
-            return;
-
-        users.push(username);
         socket.emit('login', username);
+    }
 
+    function onSuccessfullLogin() {
+        users.push(username);
         updateUserNum(users.length);
-        var meEl = document.querySelector('.me');
+        const meEl = document.querySelector('.me');
         meEl.appendChild(document.createTextNode(username));
         meEl.style.display = 'block';
 
-        loginWrapperEl.addEventListener('transitionend', function(evt) {
+        loginWrapperEl.addEventListener('transitionend', evt => {
             loginWrapperEl.parentNode.removeChild(loginWrapperEl);
             loginWrapperEl.removeEventListener('transitionend', this);
         });
-        loginWrapperEl.classList.add('login-wrapper--disabled');
+
+        loginWrapperEl.classList.add('login__wrapper--disabled');
 
         loginFormEl.removeEventListener('submit', onLogin);
     }
 
-    function validateUsername() {
-        if (!/^[a-z0-9_-]{3,15}$/i.test(username)) {
-            if (usernameTakenEl.style.display === 'block')
-                usernameTakenEl.style.display = 'none';
-            if (usernameInvalidEl.style.display === 'none' || !usernameInvalidEl.style.display)
-                usernameInvalidEl.style.display = 'block';
-            return false;
-        }
-        if (usernameInvalidEl.style.display === 'block')
-                usernameInvalidEl.style.display = 'none';
-        var usernameTaken = false;
-        for (var i = 0; i < users.length; i++) {
-            if (users[i] === username) {
-                usernameTaken = true;
-                break;
-            }
-        }
-        if (usernameTaken) {
-            if (usernameTakenEl.style.display === 'none' || !usernameTakenEl.style.display)
-                usernameTakenEl.style.display = 'block';
-            return false;
-        }
+    function onUserInvalid() {
         if (usernameTakenEl.style.display === 'block')
             usernameTakenEl.style.display = 'none';
-        return true;
+        if (usernameInvalidEl.style.display === 'none' || !usernameInvalidEl.style.display)
+            usernameInvalidEl.style.display = 'block';
+    }
+
+    function onUserTaken() {
+        if (usernameInvalidEl.style.display === 'block')
+            usernameInvalidEl.style.display = 'none';
+        if (usernameTakenEl.style.display === 'none' || !usernameTakenEl.style.display)
+            usernameTakenEl.style.display = 'block';
     }
 
     function onInit(existingUsers) {
         init = true;
         users = existingUsers;
         updateUserNum(users.length);
-        users.forEach(function(user) {
-            var newUserListEl = document.createElement('div');
+        users.forEach(user => {
+            const newUserListEl = document.createElement('div');
             newUserListEl.setAttribute('data-user', user);
-            var newUsername = document.createTextNode(user);
+            const newUsername = document.createTextNode(user);
             newUserListEl.appendChild(newUsername);
             usersOnlineEl.appendChild(newUserListEl);
         });
-        spinnerEl.addEventListener('transitionend', function(evt) {
+        spinnerEl.addEventListener('transitionend', evt => {
             spinnerEl.parentNode.removeChild(spinnerEl);
             spinnerEl.removeEventListener('transitionend', this);
         });
@@ -113,7 +103,7 @@ window.onload = function() {
     }
 
     function onTyping(evt) {
-        var key = evt.keyCode;
+        const key = evt.keyCode;
         if (key === 9 || key === 13) return;
         if (key >= 16 && key <= 45) return;
         if (key >= 91 && key <= 93) return;
@@ -124,27 +114,27 @@ window.onload = function() {
         }
         if (lastTimeout)
             clearTimeout(lastTimeout);
-        lastTimeout = setTimeout(function() {
+        lastTimeout = setTimeout(() => {
             isTyping = false;
             socket.emit('ended typing', username);
         }, 2000);
     }
 
     function onStartedTyping(user) {
-        var newBubbleEl = document.createElement('div');
+        const newBubbleEl = document.createElement('div');
         newBubbleEl.classList.add('bubble');
         newBubbleEl.classList.add('typing-indicator');
         newBubbleEl.innerHTML = '<span></span><span></span><span></span>';
-        var lastMessageEl = chatBoxEl.querySelectorAll('li');
+        let lastMessageEl = chatBoxEl.querySelectorAll('li');
         lastMessageEl = lastMessageEl[lastMessageEl.length - 1];
         if (lastMessageEl && lastMessageEl.getAttribute('data-user') === user) {
             lastMessageEl.appendChild(newBubbleEl);
             return;
         }
-        var newMessageEl = document.createElement('li');
+        const newMessageEl = document.createElement('li');
         newMessageEl.setAttribute('data-user', user);
         newMessageEl.setAttribute('data-typing', 'true');
-        var newUserEl = document.createElement('span');
+        const newUserEl = document.createElement('span');
         newUserEl.classList.add('name');
         newUserEl.appendChild(document.createTextNode(user));
         newMessageEl.appendChild(newUserEl);
@@ -153,19 +143,19 @@ window.onload = function() {
     }
 
     function onEndedTyping(user) {
-        var messageEl = document.querySelectorAll('li[data-user="' + user + '"]');
+        let messageEl = document.querySelectorAll('li[data-user="' + user + '"]');
         messageEl = messageEl[messageEl.length - 1];
         if (messageEl.hasAttribute('data-typing')) {
             chatBoxEl.removeChild(messageEl);
             return;
         }
-        var typingEl = messageEl.lastChild;
+        const typingEl = messageEl.lastChild;
         messageEl.removeChild(typingEl);
     }
 
     function onMessage(evt) {
         evt.preventDefault();
-        var msg = messageInputEl.value.trim();
+        const msg = messageInputEl.value.trim();
         if (!msg)
             return;
         if (isTyping) {
@@ -179,11 +169,11 @@ window.onload = function() {
     }
 
     function postNotice(user) {
-        var index = users.indexOf(user);
-        var hasLeft = index > -1;
-        var newNoticeEl = document.createElement('li');
+        const index = users.indexOf(user);
+        const hasLeft = index > -1;
+        const newNoticeEl = document.createElement('li');
         newNoticeEl.classList.add('notice');
-        var newUserEl = document.createElement('span');
+        const newUserEl = document.createElement('span');
         newUserEl.classList.add('user');
         newUserEl.appendChild(document.createTextNode(user));
         newNoticeEl.appendChild(newUserEl);
@@ -194,7 +184,7 @@ window.onload = function() {
             usersOnlineEl.removeChild(usersOnlineEl.querySelector('div[data-user="' + user + '"]'));
             users.splice(index, 1);
         } else {
-            var newUserListEl = document.createElement('div');
+            const newUserListEl = document.createElement('div');
             newUserListEl.setAttribute('data-user', user);
             newUserListEl.appendChild(document.createTextNode(user));
             usersOnlineEl.appendChild(newUserListEl);
@@ -207,19 +197,19 @@ window.onload = function() {
         if (blurred) {
             document.title = 'Pole Chat (' + (++unreadMessages) + ')';
         }
-        var time = getTime();
-        var newBubbleEl = document.createElement('div');
+        const time = getTime();
+        const newBubbleEl = document.createElement('div');
         newBubbleEl.classList.add('bubble');
         newBubbleEl.setAttribute('data-time', time);
         newBubbleEl.appendChild(document.createTextNode(msg));
-        var newTimeEl;
-        var lastMessageEl = chatBoxEl.querySelectorAll('li');
+        let newTimeEl;
+        let lastMessageEl = chatBoxEl.querySelectorAll('li');
         lastMessageEl = lastMessageEl[lastMessageEl.length - 1];
         if (lastMessageEl && lastMessageEl.getAttribute('data-user') === user) {
-            var lastBubbleEl = lastMessageEl.querySelectorAll('.bubble');
+            let lastBubbleEl = lastMessageEl.querySelectorAll('.bubble');
             lastBubbleEl = lastBubbleEl[lastBubbleEl.length - 1];
             if (lastBubbleEl.getAttribute('data-time') === time) {
-                var brEl = document.createElement('br');
+                const brEl = document.createElement('br');
                 lastMessageEl.insertBefore(brEl, lastBubbleEl.nextSibling);
                 lastMessageEl.insertBefore(newBubbleEl, brEl.nextSibling);
             } else {
@@ -230,12 +220,12 @@ window.onload = function() {
                 lastMessageEl.appendChild(newTimeEl);
             }
         } else {
-            var newMessageEl = document.createElement('li');
+            const newMessageEl = document.createElement('li');
             newMessageEl.setAttribute('data-user', user);
             if (user === username)
                 newMessageEl.classList.add('mine');
             else {
-                var newUserEl = document.createElement('span');
+                const newUserEl = document.createElement('span');
                 newUserEl.classList.add('name');
                 newUserEl.appendChild(document.createTextNode(user));
                 newMessageEl.appendChild(newUserEl);
@@ -267,9 +257,9 @@ window.onload = function() {
 };
 
 function getTime() {
-    var time = new Date();
-    var hours = time.getHours();
-    var minutes = time.getMinutes();
+    const time = new Date();
+    let hours = time.getHours();
+    let minutes = time.getMinutes();
     if (hours < 10) hours = '0' + hours;
     if (minutes < 10) minutes = '0' + minutes;
     return hours + ':' + minutes;

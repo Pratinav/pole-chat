@@ -1,0 +1,14 @@
+{
+  "devDependencies": {
+    "browser-sync": "*",
+    "gulp": "*",
+    "gulp-autoprefixer": "*",
+    "gulp-htmlmin": "*",
+    "gulp-pug": "*",
+    "gulp-plumber": "*",
+    "gulp-sass": "*",
+    "gulp-uglify": "*",
+    "gulp-babel": "*",
+    "babel-preset-es2015": "*"
+  }
+}
