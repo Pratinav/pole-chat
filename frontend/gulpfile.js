@@ -34,7 +34,7 @@ gulp.task('pug', function() {
 });
 
 gulp.task('styles', function(){
-    return gulp.src(['src/styles/main.sass'])
+    return gulp.src(['src/css/main.sass'])
         .pipe(plumber({
             errorHandler: function (error) {
                 console.log(error.message);
@@ -43,7 +43,7 @@ gulp.task('styles', function(){
         }))
         .pipe(sass())
         .pipe(autoprefixer())
-        .pipe(gulp.dest('src/styles'));
+        .pipe(gulp.dest('src/css'));
 });
 
 gulp.task('scripts', function(){
@@ -63,7 +63,7 @@ gulp.task('scripts', function(){
 });
 
 gulp.task('default', ['browser-sync'], function(){
-    gulp.watch("src/styles/main.sass", ['styles']);
+    gulp.watch("src/css/main.sass", ['styles']);
     gulp.watch("src/js/app.js", ['scripts']);
     gulp.watch("src/index.pug", ['pug']);
 });
