@@ -18,7 +18,7 @@ Incase you want to run it on your machine-
     - Make any changes to the files in the `src` directory
 - To make any changes to the api, simply edit the files
 
-### TODO
+## TODO
 <!--
 NOT-SO PRIVATE TODOS
 ====================
@@ -29,3 +29,8 @@ NOT-SO PRIVATE TODOS
 - Add private chat rooms
 - Add user registration?
 - Add message database?
+
+## License
+Copyright (c) 2016 Pratinav Bagla
+
+This content is released under [The MIT License](https://github.com/pratinav/pole-chat/blob/master/LICENSE).
