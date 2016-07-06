@@ -296,7 +296,7 @@ header {
     .send-msg form.container .btn-send:active {
       fill: #308dcc; }
 
-.typing-indicator.bubble {
+.typing-indicator li .bubble.typing-indicator {
   padding: 0.75em 1em; }
 
 .typing-indicator span {
