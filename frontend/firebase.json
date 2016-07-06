@@ -15,7 +15,7 @@
         "package.json"
     ],
     "headers": [{
-        "source": "**/*.@(html|css|js|jpg|jpeg|png|svg|gif)",
+        "source": "**",
         "headers": [{
             "key": "Cache-Control",
             "value": "max-age=31536000"
