@@ -50,6 +50,7 @@ window.onload = () => {
     function onLogin(evt) {
         evt.preventDefault();
         username = loginInputEl.value.trim();
+        if (!username) return;
         socket.emit('login', username);
     }
 
