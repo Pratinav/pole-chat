@@ -1,14 +1,14 @@
 {
-    "name": "pole-chat",
-    "version": "0.0.0",
-    "description": "A simple chat app.",
-    "private": true,
-    "scripts": {
-        "start": "node index.js"
-    },
-    "dependencies": {
-        "socket.io": "*"
-    },
-    "author": "Pratinav Bagla <pratinavbagla@gmail.com> (https://pratinav.xyz/)",
-    "license": "MIT"
+  "name": "pole-chat",
+  "version": "0.0.0",
+  "description": "A simple chat app.",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "socket.io": "*"
+  },
+  "author": "Pratinav Bagla <pratinavbagla@gmail.com> (https://pratinav.xyz/)",
+  "license": "MIT"
 }

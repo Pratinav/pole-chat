@@ -1,24 +1,24 @@
 {
-    "hosting": {
-        "public": "public"
-    },
-    "rewrites": [{
-        "source" : "**",
-        "destination" : "/index.html"
-    }],
-    "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**",
-        "src",
-        "gulpfile.js",
-        "package.json"
-    ],
+  "hosting": {
+    "public": "public"
+  },
+  "rewrites": [{
+    "source" : "**",
+    "destination" : "/index.html"
+  }],
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**",
+    "src",
+    "gulpfile.js",
+    "package.json"
+  ],
+  "headers": [{
+    "source": "**",
     "headers": [{
-        "source": "**",
-        "headers": [{
-            "key": "Cache-Control",
-            "value": "max-age=31536000"
-        }]
+      "key": "Cache-Control",
+      "value": "max-age=31536000"
     }]
+  }]
 }

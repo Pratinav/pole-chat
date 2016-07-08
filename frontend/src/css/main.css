@@ -239,6 +239,8 @@ header {
       display: inline-block;
       max-width: 70%;
       margin: 1px 0; }
+      .chatbox li .bubble.typing-indicator {
+        padding: 0.75em 1em; }
   .chatbox .mine {
     text-align: right; }
     .chatbox .mine .bubble {
@@ -295,9 +297,6 @@ header {
       outline: none; }
     .send-msg form.container .btn-send:active {
       fill: #308dcc; }
-
-.typing-indicator li .bubble.typing-indicator {
-  padding: 0.75em 1em; }
 
 .typing-indicator span {
   height: 0.7em;
